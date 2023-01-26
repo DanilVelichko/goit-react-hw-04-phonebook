@@ -1,85 +1,70 @@
+import { useState, useEffect } from 'react';
 import React from 'react';
 import Form from './Form/Form';
 import Filter from './Filter/Filter';
 import ContactsList from './ContactsList/ContactsList';
+import useLocalStorage from './hooks/useLocalStorage';
 
-export class App extends React.Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+const App = () => {
+  const [contacts, setContacts] = useLocalStorage('contacts', '');
+  const [filter, setFilter] = useState('');
 
-  formSubmitHandler = data => {
-    const matchNameInput = this.state.contacts.find(
+  const formSubmitHandler = data => {
+    const matchNameInput = contacts.find(
       contact => contact.name.toLowerCase() === data.name.toLowerCase()
     );
 
     if (matchNameInput) {
       alert(data.name + ' is already in contacts.');
     } else {
-      this.setState(prev => ({ contacts: [...prev.contacts, data] }));
+      setContacts(prev => [...prev, data]);
     }
   };
 
-  handleDataUpdate = input => {
-    this.setState({ filter: input });
+  const handleDataUpdate = input => {
+    setFilter(input);
   };
 
-  filterContacts() {
-    if (this.state.filter !== '') {
-      return this.state.contacts.filter(contact =>
-        contact.name
-          .toLowerCase()
-          .includes(this.state.filter.toLowerCase().trim())
+  const filterContacts = () => {
+    if (filter !== '') {
+      return contacts.filter(contact =>
+        contact.name.toLowerCase().includes(filter.toLowerCase().trim())
       );
     } else {
-      return this.state.contacts;
+      return contacts;
     }
-  }
-
-  onDeleteBtn = onDeleteBtn => {
-    this.setState(prevState => ({
-      contacts: prevState.contacts.filter(
-        contact => contact.id !== onDeleteBtn
-      ),
-    }));
   };
 
-  saveToLocalStorageContact() {
-    localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-  }
+  const onDeleteBtn = id => {
+    setContacts(prev => prev.filter(contact => contact.id !== id));
+  };
 
-  getFromLocalStorageContact() {
+  const saveToLocalStorageContact = obj => {
+    window.localStorage.setItem('contacts', JSON.stringify(obj));
+  };
+
+  const getFromLocalStorageContact = () => {
     const getLocalStorageContacts = JSON.parse(
       localStorage.getItem('contacts')
     );
     if (getLocalStorageContacts !== null) {
-      this.setState({ contacts: getLocalStorageContacts });
+      setContacts(getLocalStorageContacts);
     }
-  }
+  };
 
-  componentDidMount() {
-    this.getFromLocalStorageContact();
-  }
+  useEffect(() => {
+    saveToLocalStorageContact(contacts);
+  }, [contacts]);
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevState.contacts !== this.state.contacts) {
-      this.saveToLocalStorageContact();
-    }
-  }
+  return (
+    <>
+      <Form clickSubmit={formSubmitHandler} />
 
-  render() {
-    return (
-      <>
-        <Form clickSubmit={this.formSubmitHandler} />
+      <Filter onDataUpdate={handleDataUpdate} />
 
-        <Filter onDataUpdate={this.handleDataUpdate} />
+      <ContactsList arrContacts={filterContacts()} onDeleteBtn={onDeleteBtn} />
+    </>
+  );
+};
 
-        <ContactsList
-          arrContacts={this.filterContacts()}
-          onDeleteBtn={this.onDeleteBtn}
-        />
-      </>
-    );
-  }
-}
+export default App;
