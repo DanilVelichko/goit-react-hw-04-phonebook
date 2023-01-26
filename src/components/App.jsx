@@ -3,13 +3,14 @@ import Form from './Form/Form';
 import Filter from './Filter/Filter';
 import ContactsList from './ContactsList/ContactsList';
 import useLocalStorage from './hooks/useLocalStorage';
-import { saveToLocalStorageContact } from './services/localStorageFunc';
+import * as localStoreFuncs from './services/localStorageFunc';
 
 const App = () => {
-  const [contacts, setContacts] = useLocalStorage('contacts', '');
+  const [contacts, setContacts] = useLocalStorage('contacts', []);
   const [filter, setFilter] = useState('');
 
   const formSubmitHandler = data => {
+        
     const matchNameInput = contacts.find(
       contact => contact.name.toLowerCase() === data.name.toLowerCase()
     );
@@ -26,6 +27,7 @@ const App = () => {
   };
 
   const filterContacts = () => {
+    console.log(contacts)
     if (filter !== '') {
       return contacts.filter(contact =>
         contact.name.toLowerCase().includes(filter.toLowerCase().trim())
@@ -40,8 +42,12 @@ const App = () => {
   };
 
   useEffect(() => {
-    saveToLocalStorageContact(contacts);
+   if (contacts.length > 0){
+     localStoreFuncs.saveToLocalStorageContact(contacts);
+  }
   }, [contacts]);
+
+
 
   return (
     <>
