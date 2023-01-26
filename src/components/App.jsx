@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Form from './Form/Form';
 import Filter from './Filter/Filter';
 import ContactsList from './ContactsList/ContactsList';
 import useLocalStorage from './hooks/useLocalStorage';
+import { saveToLocalStorageContact } from './services/localStorageFunc';
 
 const App = () => {
   const [contacts, setContacts] = useLocalStorage('contacts', '');
@@ -37,19 +37,6 @@ const App = () => {
 
   const onDeleteBtn = id => {
     setContacts(prev => prev.filter(contact => contact.id !== id));
-  };
-
-  const saveToLocalStorageContact = obj => {
-    window.localStorage.setItem('contacts', JSON.stringify(obj));
-  };
-
-  const getFromLocalStorageContact = () => {
-    const getLocalStorageContacts = JSON.parse(
-      localStorage.getItem('contacts')
-    );
-    if (getLocalStorageContacts !== null) {
-      setContacts(getLocalStorageContacts);
-    }
   };
 
   useEffect(() => {
