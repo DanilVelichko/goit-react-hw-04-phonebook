@@ -26,7 +26,7 @@ const App = () => {
   };
 
   const filterContacts = () => {
-    console.log(contacts)
+  
     if (filter !== '') {
       return contacts.filter(contact =>
         contact.name.toLowerCase().includes(filter.toLowerCase().trim())
