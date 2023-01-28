@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Form from './Form/Form';
 import Filter from './Filter/Filter';
 import ContactsList from './ContactsList/ContactsList';
-import useLocalStorage from './hooks/useLocalStorage';
-import * as localStoreFuncs from './services/localStorageFunc';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 const App = () => {
   const [contacts, setContacts] = useLocalStorage('contacts', []);
@@ -40,14 +39,6 @@ const App = () => {
   const onDeleteBtn = id => {
     setContacts(prev => prev.filter(contact => contact.id !== id));
   };
-
-  useEffect(() => {
-   if (contacts.length > 0){
-     localStoreFuncs.saveToLocalStorageContact(contacts);
-  }
-  }, [contacts]);
-
-
 
   return (
     <>

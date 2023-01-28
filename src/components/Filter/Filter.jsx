@@ -3,12 +3,10 @@ import PropTypes from 'prop-types';
 import css from './Filter.module.css';
 
 const Filter = ({ onDataUpdate }) => {
-  const [inputValue, setInputValue] = useState('');
+  let value = '';
 
   const handleChange = e => {
-    const { value } = e.currentTarget;
-
-    setInputValue(value);
+    value = e.currentTarget;
     onDataUpdate(value);
   };
 
@@ -20,7 +18,7 @@ const Filter = ({ onDataUpdate }) => {
         <input
           type="text"
           name="filter"
-          value={inputValue}
+          value={value}
           onChange={handleChange}
         />
       </div>
