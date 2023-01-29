@@ -21,8 +21,8 @@ const App = () => {
     }
   };
 
-  const handleDataUpdate = input => {
-    setFilter(input);
+  const handleDataUpdate = (input) => {
+    setFilter(input.currentTarget.value);
   };
 
   const filterContacts = () => {
